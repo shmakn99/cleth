@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview &#8212; cleth 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>CLeth is a Python package which implements &#8216;Centrality Lethality Hypothesis&#8217;. The package renders
+organisms as weighted graphs of protein protein interaction scores and tries to elicit essential
+proteins using centrality measures as computed using the NetworkX package in Python.</p>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>The recommended way is to install from PyPI (virtual environment recommended):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">cleth</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>One can either predict essential proteins or check the significance of proteins predicted by the algorithm
+using statistical tests by providing a list of experimentally obtained essential proteins.</p>
+<div class="section" id="organism">
+<h2>Organism<a class="headerlink" href="#organism" title="Permalink to this headline">¶</a></h2>
+<p>This is a Python class which contains the String ID, Name, List of essential proteins and a graph of all the interactions as provided in the PPI database. An organism variable can be declared using the load module.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cleth.cleth</span> <span class="k">as</span> <span class="nn">cl</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cl</span> <span class="k">import</span> <span class="n">_io</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E_coli</span><span class="o">=</span><span class="n">_io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="mi">57271</span><span class="p">,</span><span class="n">ppi_infile_path</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="n">ess_infile_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">E_coli</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will load the model in the variable E_coli.
+User needs to provide the threshold, interaction above the threshold score will only be considered.</p>
+</div>
+<div class="section" id="node-attributes">
+<h2>Node Attributes<a class="headerlink" href="#node-attributes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E_coli</span><span class="o">.</span><span class="n">node_attributes</span><span class="p">(</span><span class="n">centralities</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will return a dictionary of primary centralities (degree, betweeness and eigen-vector).
+This command will also create a pickle file containing this dictionary in the cache directory which will be present in the current directory.</p>
+</div>
+<div class="section" id="predict-essential-proteins">
+<h2>Predict Essential Proteins<a class="headerlink" href="#predict-essential-proteins" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cl</span> <span class="k">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">f</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">predicted</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">predict_essential</span><span class="p">(</span><span class="n">E_coli</span><span class="p">,</span><span class="n">cut_off</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span><span class="n">centralities</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters</p>
+<blockquote>
+<div><p>organism - object of class organism, it brings with itself the node_attrunites function used in
+the function.</p>
+<p>cut_off - The percentile cut-off to be considered while selecting the essential proteins.</p>
+<p>centralities - The set of centralties or node (protein) attributes to be used based on which the proteins
+will be segregated.</p>
+</div></blockquote>
+<p>Returns</p>
+<blockquote>
+<div>A dictionary. Where the keys are the centralities or the node (protein) attributes considered and the values
+are the list of essential proteins for each centraility.</div></blockquote>
+</div>
+<div class="section" id="percentile-wise-distribution">
+<h2>Percentile Wise Distribution<a class="headerlink" href="#percentile-wise-distribution" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">distribution</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">percentilewise_distribution</span><span class="p">(</span><span class="n">E_coli</span><span class="p">,</span><span class="n">centralities</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">,</span><span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters</p>
+<blockquote>
+<div><p>organism - object of class organism, it brings with itself the node_attrunites function used in
+the function.</p>
+<p>centralities - The set of centralties or node (protein) attributes to be used based on which the proteins
+will be segregated.</p>
+<p>steps - The steps in which percentile brackets will increase.
+For example if steps=10, the percentiles consedered will be - 10,20,30 ... 90</p>
+</div></blockquote>
+<p>Returns</p>
+<blockquote>
+<div><p>A dictionary. Where the keys are different centralities and the values are dictionaries themselves.</p>
+<p>Where the keys are different cut-offs and the values are the percentage of nodes (proteins) which are above the
+cut-off and are essential. The higher the number for higher percentile the better the centrality measure is.</p>
+</div></blockquote>
+<p>A pickle file containing the returned dictionary is also saved in the cache directory.</p>
+</div>
+<div class="section" id="validate">
+<h2>Validate<a class="headerlink" href="#validate" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p_vals</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">E_coli</span><span class="p">,</span><span class="n">centralities</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">,</span><span class="n">niter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">param</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="n">zsco_threshold</span><span class="o">=</span><span class="mf">2.33</span><span class="p">,</span><span class="n">get_from_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters</p>
+<blockquote>
+<div><p>organism - object of class organism, it brings with itself the node_attrunites function used in
+the function.</p>
+<p>centralities - The set of centralties or node (protein) attributes to be used for which the pvals will
+be calculated</p>
+<p>param - The statistical test used for comparing the significance of in silico predictions.</p>
+<p>&#8216;mean&#8217; - The mean of the node properties of proteins is compared with that of randomly obtained population.
+&#8216;median&#8217; - The median of the node properties of proteins is compared with that of randomly obtained population.
+&#8216;zsco&#8217; - z-scores are obtained for comparision and a threshold value is used to segregate significant distributions.</p>
+<p>get_from_cache - If true a pre calculated test value is supplied. The values for every might differ slightly
+as there are random processed involved.</p>
+<p>niter - The number of times the test is performed.</p>
+</div></blockquote>
+<p>Returns</p>
+<blockquote>
+<div>A dictionary where the keys are the are different centralities and the values are the p-values based on whatever
+parameter is supplied for testing.</div></blockquote>
+<p>A pickle file containing the returned dictionary is also saved in the cache directory.</p>
+</div>
+<div class="section" id="graphing-the-results">
+<h2>Graphing the Results<a class="headerlink" href="#graphing-the-results" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">graphit</span><span class="p">(</span><span class="n">organism</span><span class="p">,</span><span class="n">centralities</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">,</span><span class="n">steps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parameters</p>
+<blockquote>
+<div><p>organism - object of class organism, it brings with itself the node_attrunites function used in
+the function.</p>
+<p>centralities - The set of centralties or node (protein) attributes to be used based on which the proteins
+will be segregated.</p>
+<p>steps - The steps in which percentile brackets will increase.
+For example if steps=10, the percentiles consedered will be - 10,20,30 ... 90</p>
+</div></blockquote>
+<p>Returns</p>
+<blockquote>
+<div>Nothing. Publishes graphs to cache directory.</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#organism">Organism</a></li>
+<li><a class="reference internal" href="#node-attributes">Node Attributes</a></li>
+<li><a class="reference internal" href="#predict-essential-proteins">Predict Essential Proteins</a></li>
+<li><a class="reference internal" href="#percentile-wise-distribution">Percentile Wise Distribution</a></li>
+<li><a class="reference internal" href="#validate">Validate</a></li>
+<li><a class="reference internal" href="#graphing-the-results">Graphing the Results</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Manik Sharma.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
